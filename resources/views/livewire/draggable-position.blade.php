@@ -5,6 +5,22 @@
 
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script>
+        var tWidth, tHeight;
+        var cWidth, cHeight;
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('template_detail', data => {
+                processData(data[0]);
+            });
+        });
+
+        function processData(data) {
+            tWidth = data.tWidth
+            cWidth = data.cWidth
+
+            tHeight = data.tHeight
+            cHeight = data.cHeight
+        }
+
         interact('.dropzone').dropzone({
             accept: '.draggable',
             ondrop: function(event) {
@@ -12,15 +28,14 @@
                 var dropzoneElement = event.target
                 var rect1 = draggableElement.getBoundingClientRect();
                 var rect2 = dropzoneElement.getBoundingClientRect();
-                var x = rect1.left-rect2.left;
-                var y = rect1.top-rect2.top;
-                if (x <= 0) {
-                    x = 0;
+                var x = rect1.left - rect2.left;
+                var y = rect1.top - rect2.top;
+
+                if (tHeight) {
+                    x = (tWidth/cWidth)*x
+                    y = (tHeight/cHeight)*y
                 }
-                if (y <= 0) {
-                    y = 0;
-                }
-                @this.set_position(x,y);
+                @this.set_position(parseInt(x), parseInt(y));
             },
         });
 
